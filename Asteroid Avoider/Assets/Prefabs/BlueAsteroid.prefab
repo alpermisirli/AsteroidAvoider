@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 731894804832450923}
   - component: {fileID: 296256407}
   m_Layer: 0
-  m_Name: Asteroid Lava Blue
+  m_Name: BlueAsteroid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
