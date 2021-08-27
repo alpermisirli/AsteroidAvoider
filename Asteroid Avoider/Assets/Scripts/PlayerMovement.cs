@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float forceMagnitude;
     [SerializeField] private float maxVelocity;
+    [SerializeField] private float rotationSpeed;
 
     [SerializeField] [Tooltip("Movetowards or moveaway from touch position")]
     private bool invertForce;
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         ProcessInput();
 
         KeepPlayerOnScreen();
+        RotateShip();
     }
 
 
@@ -84,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
         {
             newPos.x = -newPos.x - 0.1f;
         }
+
         if (viewportPos.y > 1)
         {
             newPos.y = -newPos.y + 0.1f;
@@ -95,5 +98,16 @@ public class PlayerMovement : MonoBehaviour
 
 
         transform.position = newPos;
+    }
+
+    private void RotateShip()
+    {
+        if (rb.velocity == Vector3.zero)
+        {
+            return;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(rb.velocity, Vector3.back);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 }
