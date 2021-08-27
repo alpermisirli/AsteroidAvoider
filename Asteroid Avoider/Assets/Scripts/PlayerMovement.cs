@@ -14,9 +14,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Camera mainCamera;
 
-    private Rigidbody rb;
-
     private Vector3 movementDirection;
+
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +27,28 @@ public class PlayerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        ProcessInput();
+
+        KeepPlayerOnScreen();
+    }
+
+
+    //For physics calculations
+    private void FixedUpdate()
+    {
+        if (movementDirection == Vector3.zero)
+        {
+            return;
+        }
+
+        rb.AddForce(movementDirection * forceMagnitude * Time.deltaTime,
+            ForceMode.Force); //Time.deltaTime actually is not needed inside fixed update
+
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity); //Limiting maximum velocity
+    }
+
+    private void ProcessInput()
     {
         if (Touchscreen.current.primaryTouch.press.isPressed)
         {
@@ -49,17 +71,29 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //For physics calculations
-    private void FixedUpdate()
+    private void KeepPlayerOnScreen()
     {
-        if (movementDirection == Vector3.zero)
+        Vector3 newPos = transform.position;
+        Vector3 viewportPos = mainCamera.WorldToViewportPoint(transform.position);
+
+        if (viewportPos.x > 1)
         {
-            return;
+            newPos.x = -newPos.x + 0.1f;
+        }
+        else if (viewportPos.x < 0)
+        {
+            newPos.x = -newPos.x - 0.1f;
+        }
+        if (viewportPos.y > 1)
+        {
+            newPos.y = -newPos.y + 0.1f;
+        }
+        else if (viewportPos.y < 0)
+        {
+            newPos.y = -newPos.y - 0.1f;
         }
 
-        rb.AddForce(movementDirection * forceMagnitude * Time.deltaTime,
-            ForceMode.Force); //Time.deltaTime actually is not needed inside fixed update
 
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity); //Limiting maximum velocity
+        transform.position = newPos;
     }
 }
