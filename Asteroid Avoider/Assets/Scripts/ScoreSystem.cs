@@ -24,6 +24,11 @@ public class ScoreSystem : MonoBehaviour
         scoreText.text = "Score : " + Mathf.FloorToInt(score).ToString();
     }
 
+    public void StartTimer()
+    {
+        shouldCount = true;
+    }
+
     public int EndTimer()
     {
         shouldCount = false;
